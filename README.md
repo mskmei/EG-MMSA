@@ -10,7 +10,11 @@ According to our recent results, the emtion-guided strategy can improce the perf
 
 As we described above, we modify the network structure of MSA models and add an emtion-guided module. The below images give example of emtion-guided module in the framework of MISA and MMIM. The improved frameworks are called EG-MISA and EG-MMIM repectively.
 
+### EG-MISA
+
 ![Structure of EG-MISA](images/EG-MISA.jpg)
+
+### EG-MMIM
 
 ![Structure of EG-MMIM](images/EG-MMIM.jpg)
 
