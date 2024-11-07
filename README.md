@@ -4,7 +4,7 @@
 
 EG-MMSA is a modified version of MMSA by THUIAR. EG-MMSA integrate the module of emotion-guided for various MSA structures like MISA ans MMIM, which will pre-extract prior emotion information from raw audio data and apply weighted sum to guide the fusion procedure. In this work, Wav2Vec model is used to extract emotion feature, and an MLP is equipped to transfrom the emtion feature to a score matrix, which is soon be used in the process of fusion to achieve the feature alignment of different modalities. The method to integrate the emtion-guided module is different due to different MSA structures, considering their different mathematical principle in the fusion procedure and their different transformation of feature vectors. We now apply the idea of emtion-guided module on 2 famous traditional frameworks based on MMSA, MISA and MMIM. More models are expected to be modified in the near future and some bias purification method may also be explored.
 
-According to our recent results, the emtion-guided strategy can improce the performance of MSA models on CMU-MOSI dataset on most of the test metrics, and the performance of EG-Models exceeds most of baseline models we selected in our report. Further experiment will be carried out on larger dataset like CMU-MOSEI in the near future.
+According to our recent results, the emtion-guided strategy can improce the performance of MSA models on CMU-MOSI dataset on most of the test metrics, and the performance of EG-Models exceeds most of baseline models we selected in our report. Further experiment will be carried out on larger dataset like CMU-MOSEI in the near future. The preliminary results for EG-MISA and EG-MMIM compared to baseline models are shown in [result file](EG-results/results.md).
 
 ## Model Architecture of EG-Model
 
@@ -167,7 +167,9 @@ MMSA uses feature files that are organized as follows:
 
 ## 4. Results
 
-Baseline results are reported in [results/result-stat.md](results/result-stat.md)
+Baseline results are reported in [results/result-stat.md](results/result-stat.md).
+The preliminary results for EG-MISA and EG-MMIM compared to baseline models are shown in [result file](EG-results/results.md).
+
 
 ## 5. Citation
 
