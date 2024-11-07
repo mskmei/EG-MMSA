@@ -32,6 +32,8 @@ class MISA():
             }
         min_or_max = 'min' if self.args.KeyEval in ['Loss'] else 'max'
         best_valid = 1e8 if min_or_max == 'min' else 0
+        loss_train = []
+        loss_val = []
         while True: 
             epochs += 1
             # train
@@ -95,9 +97,12 @@ class MISA():
             )
             # validation
             val_results = self.do_test(model, dataloader['valid'], mode="VAL")
+            # val_results = self.do_test(model, dataloader['test'], mode="TEST")
             cur_valid = val_results[self.args.KeyEval]
             # save best model
             isBetter = cur_valid <= (best_valid - 1e-6) if min_or_max == 'min' else cur_valid >= (best_valid + 1e-6)
+            loss_train.append(train_loss)
+            loss_val.append(val_results['Loss'])
             # save best model
             if isBetter:
                 best_valid, best_epoch = cur_valid, epochs
@@ -111,9 +116,13 @@ class MISA():
                 epoch_results['valid'].append(val_results)
                 test_results = self.do_test(model, dataloader['test'], mode="TEST")
                 epoch_results['test'].append(test_results)
-            # early stop
-            if epochs - best_epoch >= self.args.early_stop:
+            if epochs >= 50:
+                print(loss_train)
+                print(loss_val)
                 return epoch_results if return_epoch_results else None
+            # early stop
+            # if epochs - best_epoch >= self.args.early_stop:
+            #     return epoch_results if return_epoch_results else None
 
     def do_test(self, model, dataloader, mode="VAL", return_sample_results=False):
         model.eval()

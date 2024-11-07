@@ -16,6 +16,39 @@ import math
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence, pad_packed_sequence #
 from transformers import BertModel, BertConfig
 
+import wav2vec
+from wav2vec.src.models.wav2vec import Wav2VecModel
+
+cp = torch.load('/root/wav2vec_large.pt')
+model_wav = Wav2VecModel.build_model(cp['args'], task=None).cuda()
+model_wav.load_state_dict(cp['model'])
+model_wav.eval()
+class SimpleNet(nn.Module):
+    def __init__(self, input_size, output_size):
+        super(SimpleNet, self).__init__()
+        self.fc = nn.Linear(input_size, output_size).cuda()
+
+    def forward(self, x):
+        x = torch.sigmoid(self.fc(x)).cuda()  
+        return x
+simple_net = SimpleNet(512*9, 16).cuda()
+simple_com = SimpleNet(16,16).cuda()
+
+def apply_wav(audio, model=model_wav):
+    # audio: [batch_size, seq, features]
+    wav_input_16khz = audio.view(audio.shape[0], -1)
+    # print(wav_input_16khz[0].unsqueeze(0).shape)
+    batch = audio.shape[0]
+    for i in range(batch):
+        z = model.feature_extractor(wav_input_16khz[i].unsqueeze(0))
+        c = model.feature_aggregator(z)
+        # print(c.shape)
+        if i == 0:
+            res = c
+        else:
+            res = torch.cat([res, c], 0)
+    return res
+
 
 __all__ = ['MMIM']
 
@@ -314,6 +347,12 @@ class MMIM(nn.Module):
         audio , audio_lengths = audio
         vision, vision_lengths = vision
 
+        # create mask
+        bs = audio.shape[0]
+        weight_wav = apply_wav(audio)
+        weight_mask = simple_net(weight_wav.view(bs, -1))
+        weight_mask = weight_mask
+
         if self.aligned:
             mask_len = torch.sum(text[:,1,:], dim=1, keepdim=True)
             text_lengths = mask_len.squeeze(1).int().detach().cpu()
@@ -323,6 +362,9 @@ class MMIM(nn.Module):
             audio_h = self.acoustic_enc(audio, audio_lengths)
             vision_h = self.visual_enc(vision, vision_lengths)
 
+        audio_h *= weight_mask
+        # audio_h = simple_com(audio_h)
+        
         if y is not None:
             lld_tv, tv_pn, H_tv = self.mi_tv(x=text_h, y=vision_h, labels=y, mem=mem['tv'])
             lld_ta, ta_pn, H_ta = self.mi_ta(x=text_h, y=audio_h, labels=y, mem=mem['ta'])
@@ -342,6 +384,8 @@ class MMIM(nn.Module):
         nce_t = self.cpc_zt(text_h, fusion)
         nce_v = self.cpc_zv(vision_h, fusion)
         nce_a = self.cpc_za(audio_h, fusion)
+        # print(audio.size(), audio_h.size(), nce_a.size())
+        # (32,375,5) (32, 16)
         
         nce = nce_t + nce_v + nce_a
 

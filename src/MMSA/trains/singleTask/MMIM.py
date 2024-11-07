@@ -70,6 +70,9 @@ class MMIM():
                 text = batch_data['text'].to(self.args.device)
                 audio = batch_data['audio'].to(self.args.device)
                 vision = batch_data['vision'].to(self.args.device)
+                
+                # print(text.size(), audio.size(), vision.size())
+                # torch.Size([32, 3, 50]) torch.Size([32, 375, 5]) torch.Size([32, 500, 20])
                 labels = batch_data['labels']['M'].to(self.args.device)
                 labels = labels.view(-1, 1)
                 if not self.args.need_data_aligned:
@@ -175,6 +178,8 @@ class MMIM():
             }
         min_or_max = 'min' if self.args.KeyEval in ['Loss'] else 'max'
         best_valid = 1e8 if min_or_max == 'min' else 0
+        loss_train = []
+        loss_val = []
         while True: 
             epochs += 1
             if self.args.contrast:
@@ -187,6 +192,8 @@ class MMIM():
             )
             # validation
             val_results = self.do_test(model, dataloader['valid'], mode="VAL")
+            # val_results = self.do_test(model, dataloader['test'], mode="TEST")
+            
             self.scheduler_main.step(val_results['Loss'])    # Decay learning rate by validation loss
             cur_valid = val_results[self.args.KeyEval]
             # save best model
@@ -197,9 +204,15 @@ class MMIM():
                 # save model
                 torch.save(model.cpu().state_dict(), self.args.model_save_path)
                 model.to(self.args.device)
-            # early stop
-            if epochs - best_epoch >= self.args.early_stop:
+            loss_train.append(round(train_loss_main, 4))
+            loss_val.append(val_results['Loss'])
+            if epochs >= 50:
+                print(loss_train)
+                print(loss_val)
                 return
+            # early stop
+            # if epochs - best_epoch >= self.args.early_stop:
+            #     return
 
     def do_test(self, model, dataloader, mode="VAL", return_sample_results=False):
         model.eval()

@@ -9,7 +9,44 @@ from ..subNets import BertTextEncoder
 from torch.autograd import Function
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
+import wav2vec
+from wav2vec.src.models.wav2vec import Wav2VecModel
+
+
 __all__ = ['MISA']
+
+cp = torch.load('/root/wav2vec_large.pt')
+model_wav = Wav2VecModel.build_model(cp['args'], task=None).cuda()
+model_wav.load_state_dict(cp['model'])
+model_wav.eval()
+class SimpleNet(nn.Module):
+    def __init__(self, input_size, output_size):
+        super(SimpleNet, self).__init__()
+        self.fc = nn.Linear(input_size, output_size).cuda()
+
+    def forward(self, x):
+        x = torch.sigmoid(self.fc(x)).cuda()  
+        return x
+simple_net = SimpleNet(512*9, 20).cuda()
+simple_net_v  = SimpleNet(512*9, 80).cuda()
+simple_com = SimpleNet(20,20).cuda()
+
+def apply_wav(audio, model=model_wav):
+    # audio: [batch_size, seq, features]
+    wav_input_16khz = audio.view(audio.shape[0], -1)
+    # print(wav_input_16khz[0].unsqueeze(0).shape)
+    batch = audio.shape[0]
+    for i in range(batch):
+        z = model.feature_extractor(wav_input_16khz[i].unsqueeze(0))
+        c = model.feature_aggregator(z)
+        # print(c.shape)
+        if i == 0:
+            res = c
+        else:
+            res = torch.cat([res, c], 0)
+    return res
+
+
 
 class ReverseLayerF(Function):
     """
@@ -182,9 +219,16 @@ class MISA(nn.Module):
 
     def alignment(self, text, acoustic, visual):
         # bert_sent_mask : consists of seq_len of 1, followed by padding of 0.
+        # print(text.shape, acoustic.shape, visual.shape)
+        # torch.Size([16, 3, 50]) torch.Size([16, 375, 5]) torch.Size([16, 500, 20])
         bert_sent, bert_sent_mask, bert_sent_type = text[:,0,:], text[:,1,:], text[:,2,:]
 
         batch_size = text.size(0)
+        weight_wav = apply_wav(acoustic)
+        weight_mask = simple_net(weight_wav.view(batch_size, -1))
+        weight_mask_v = simple_net_v(weight_wav.view(batch_size, -1))
+        weight_mask = weight_mask
+        # weight_mask_v = weight_mask_v*0.8 + 0.2
         
         if self.config.use_bert:
             bert_output = self.bertmodel(text) # [batch_size, seq_len, 768]
@@ -201,10 +245,14 @@ class MISA(nn.Module):
         # extract features from visual modality
         final_h1v, final_h2v = self.extract_features(visual, lengths, self.vrnn1, self.vrnn2, self.vlayer_norm)
         utterance_video = torch.cat((final_h1v, final_h2v), dim=2).permute(1, 0, 2).contiguous().view(batch_size, -1)
-
+        # utterance_video *= weight_mask_v
         # extract features from acoustic modality
         final_h1a, final_h2a = self.extract_features(acoustic, lengths, self.arnn1, self.arnn2, self.alayer_norm)
         utterance_audio = torch.cat((final_h1a, final_h2a), dim=2).permute(1, 0, 2).contiguous().view(batch_size, -1)
+        utterance_audio *= weight_mask
+        # utterance_audio = simple_com(utterance_audio)
+        # print(utterance_video.shape, utterance_audio.shape)
+        # torch.Size([16, 80]) torch.Size([16, 20])
 
         # Shared-private encoders
         self.shared_private(utterance_text, utterance_video, utterance_audio)
