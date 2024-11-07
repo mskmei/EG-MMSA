@@ -1,13 +1,22 @@
-[![](https://badgen.net/badge/license/MIT/green)](#License)
-[![](https://badgen.net/pypi/v/MMSA)](https://pypi.org/project/MMSA/) 
-![](https://badgen.net/pypi/python/MMSA/)
-[![](https://badgen.net/badge/contact/THUIAR/purple)](https://thuiar.github.io/)
 
-# MMSA
 
-MMSA is a unified framework for Multimodal Sentiment Analysis.
+# EG-MMSA
 
-### Features
+EG-MMSA is a modified version of MMSA by THUIAR. EG-MMSA integrate the module of emotion-guided for various MSA structures like MISA ans MMIM, which will pre-extract prior emotion information from raw audio data and apply weighted sum to guide the fusion procedure. In this work, Wav2Vec model is used to extract emotion feature, and an MLP is equipped to transfrom the emtion feature to a score matrix, which is soon be used in the process of fusion to achieve the feature alignment of different modalities. The method to integrate the emtion-guided module is different due to different MSA structures, considering their different mathematical principle in the fusion procedure and their different transformation of feature vectors. We now apply the idea of emtion-guided module on 2 famous traditional frameworks based on MMSA, MISA and MMIM. More models are expected to be modified in the near future and some bias purification method may also be explored.
+
+According to our recent results, the emtion-guided strategy can improce the performance of MSA models on CMU-MOSI dataset on most of the test metrics, and the performance of EG-Models exceeds most of baseline models we selected in our report. Further experiment will be carried out on larger dataset like CMU-MOSEI in the near future.
+
+## Model Architecture of EG-Model
+
+As we described above, we modify the network structure of MSA models and add an emtion-guided module. The below images give example of emtion-guided module in the framework of MISA and MMIM. The improved frameworks are called EG-MISA and EG-MMIM repectively.
+
+![Structure of EG-MISA](images/EG-MISA.jpg)
+
+![Structure of EG-MMIM](images/EG-MMIM.jpg)
+
+
+
+## Features
 
 - Train, test and compare multiple MSA models in a unified framework.
 - Supports [15](#3-supported-msa-models) MSA models, including recent works.
