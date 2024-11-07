@@ -90,25 +90,6 @@ $ python -m MMSA -d mosi -m mmim -s 1111 -s 1112 -r MMSA/config/config_regressio
 
 - For more detailed usage, please refer to [Commandline Arguments](https://github.com/thuiar/MMSA/wiki/Commandline-Arguments).
 
-### 1.3 Clone & Edit the Code
-
-- Clone this repo and install requirements.
-  ```bash
-  $ git clone https://github.com/thuiar/MMSA
-  ```
-- Edit the codes to your needs. See [Code Structure](https://github.com/thuiar/MMSA/wiki/Code-Structure) for a basic review of our code structure.
-- After editing, run the following commands:
-  ```bash
-  $ cd MMSA-master # make sure you're in the top directory
-  $ pip install .
-  ```
-- Then run the code like above sections.
-- To further change the code, you need to re-install the package:
-  ```bash
-  $ pip uninstall MMSA
-  $ pip install .
-  ```
-- If you'd rather run the code without installation(like in v_1.0), please refer to [Run Code without Installation](https://github.com/thuiar/MMSA/wiki/Run-Code-without-Installation).
 
 ## 2. Datasets
 
@@ -153,6 +134,11 @@ MMSA uses feature files that are organized as follows:
 
 > **Note:** If you wish to extract customized multimodal features, please try out our [MMSA-FET](https://github.com/thuiar/MMSA-FET)
 
+## 3. Suported EG-MSA Models
+|    Type     |                   Model Name                            |                                          From                                          |    Published      |
+| :---------: | :-----------------------------------------------------: | :------------------------------------------------------------------------------------: | :---------------: |
+| Single-Task |       [MISA](src/MMSA/models/singleTask/MISA.py)        |                      [MISA](https://github.com/declare-lab/MISA)                       | ACMMM 2020        |
+| Single-Task |       [MMIM](src/MMSA/models/singleTask/MMIM.py)        |            [MMIM](https://github.com/declare-lab/Multimodal-Infomax)                   | EMNLP 2021        |
 
 ## 3. Supported MSA Models
 
