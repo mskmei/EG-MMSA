@@ -1,6 +1,6 @@
 [submodule "src/MMSA/models/multiTask/wav2vec"]
 	path = src/MMSA/models/multiTask/wav2vec
-	url = https://github.com/eastonYi/wav2vec
+	url = https://github.com/mskmei/simplified-wav2vec
 [submodule "src/MMSA/models/singleTask/wav2vec"]
 	path = src/MMSA/models/singleTask/wav2vec
-	url = https://github.com/eastonYi/wav2vec
+	url = https://github.com/mskmei/simplified-wav2vec
