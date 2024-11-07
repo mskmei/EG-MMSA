@@ -22,6 +22,7 @@ As we described above, we modify the network structure of MSA models and add an 
 
 ## Features
 
+- **Now, EG-MMSA only supports MISA and MMIM on CMU-MOSI Dataset**
 - Train, test and compare multiple MSA models in a unified framework.
 - Supports [15](#3-supported-msa-models) MSA models, including recent works.
 - Supports 3 MSA datasets: [MOSI](https://ieeexplore.ieee.org/abstract/document/7742221), [MOSEI](https://aclanthology.org/P18-1208.pdf), and [CH-SIMS](https://aclanthology.org/2020.acl-main.343/).
@@ -56,6 +57,8 @@ As we described above, we modify the network structure of MSA models and add an 
   MMSA_run('mtfn', 'sims', config_file='./config.json')
   ```
 
+  If you want to reproduce EG-MMSA, use MISA and MMIM as models since they are already modified and use [config_regression](src/MMSA/config/config_regression.json) as config file to training the model on CMU-MOSI dataset.
+
 - For more detailed usage, please refer to [APIs](https://github.com/thuiar/MMSA/wiki/APIs).
 
 ### 1.2 Use Commandline Tool
@@ -76,6 +79,14 @@ As we described above, we modify the network structure of MSA models and add an 
   # train & test self_mm on SIMS with custom audio features & use gpu2
   $ python -m MMSA -d sims -m self_mm -Fa ./Features/Feature-A.pkl --gpu-ids 2
   ```
+
+If you want to reproduce EG-MMSA, use MISA and MMIM as models since they are already modified and use [config_regression](src/MMSA/config/config_regression.json) as config file to training the model on CMU-MOSI dataset.
+An Example of use should be:
+
+```bash
+$ python -m MMSA -d mosi -m misa -s 1111 -s 1112 -r MMSA/config/config_regression.json
+$ python -m MMSA -d mosi -m mmim -s 1111 -s 1112 -r MMSA/config/config_regression.json
+```
 
 - For more detailed usage, please refer to [Commandline Arguments](https://github.com/thuiar/MMSA/wiki/Commandline-Arguments).
 
@@ -101,7 +112,7 @@ As we described above, we modify the network structure of MSA models and add an 
 
 ## 2. Datasets
 
-MMSA currently supports MOSI, MOSEI, and CH-SIMS dataset. Use the following links to download raw videos, feature files and label files. You don't need to download raw videos if you're not planning to run end-to-end tasks. 
+EG-MMSA only supports CMU-MOSI right now. MMSA currently supports MOSI, MOSEI, and CH-SIMS dataset. Use the following links to download raw videos, feature files and label files. You don't need to download raw videos if you're not planning to run end-to-end tasks. 
 
 - [BaiduYun Disk](https://pan.baidu.com/s/1XmobKHUqnXciAm7hfnj2gg) `code: mfet`
 - [Google Drive](https://drive.google.com/drive/folders/1A2S4pqCHryGmiqnNSPLv7rEg63WvjCSk?usp=sharing)
