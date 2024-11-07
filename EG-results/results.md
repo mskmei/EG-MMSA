@@ -1,6 +1,6 @@
 ## Results for EG-MISA on CMU-MOSI
 
-| Model Name    | \multicolumn{5}{c|}{CMU-MOSI Dataset}                  |
+| Model Name    | CMU-MOSI Dataset                  |
 |:---:|:---:|:---:|:---:|:---:|:---:|
 |               | Acc-2   | Acc-7 | F1-score | MAE   | Corr |
 |:---:|:---:|:---:|:---:|:---:|:---:|
