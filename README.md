@@ -140,7 +140,7 @@ MMSA uses feature files that are organized as follows:
 | Single-Task |       [MISA](src/MMSA/models/singleTask/MISA.py)        |                      [MISA](https://github.com/declare-lab/MISA)                       | ACMMM 2020        |
 | Single-Task |       [MMIM](src/MMSA/models/singleTask/MMIM.py)        |            [MMIM](https://github.com/declare-lab/Multimodal-Infomax)                   | EMNLP 2021        |
 
-## 3. Supported MSA Models
+## 4. Supported MSA Models
 
 |    Type     |                   Model Name                            |                                          From                                          |    Published      |
 | :---------: | :-----------------------------------------------------: | :------------------------------------------------------------------------------------: | :---------------: |
@@ -165,13 +165,13 @@ MMSA uses feature files that are organized as follows:
 | Single-Task |           [ALMT](src/MMSA/models/singleTask/ALMT.py)  |               [ALMT](https://github.com/Haoyu-ha/ALMT)                                  | EMNLP 2023          |
 
 
-## 4. Results
+## 5. Results
 
 Baseline results are reported in [results/result-stat.md](results/result-stat.md).
 The preliminary results for EG-MISA and EG-MMIM compared to baseline models are shown in [result file](EG-results/results.md).
 
 
-## 5. Citation
+## 6. Citation
 
 - [CH-SIMS: A Chinese Multimodal Sentiment Analysis Dataset with Fine-grained Annotations of Modality](https://www.aclweb.org/anthology/2020.acl-main.343/)
 - [Learning Modality-Specific Representations with Self-Supervised Multi-Task Learning for Multimodal Sentiment Analysis](https://arxiv.org/abs/2102.04830)
