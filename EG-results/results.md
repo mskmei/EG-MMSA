@@ -1,8 +1,7 @@
 ## Results for EG-MISA on CMU-MOSI
 
-| Model Name    | CMU-MOSI Dataset                  |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-|               | Acc-2   | Acc-7 | F1-score | MAE   | Corr |
+
+|  Model Name             | Acc-2   | Acc-7 | F1-score | MAE   | Corr |
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | EF-LSTM*      | 77.38/78.48 | 35.4 | 77.35/78.51 | 0.949 | 0.669 |
 | TFN           | -/80.8  | 34.9 | -/80.7  | 0.901 | 0.698 |
